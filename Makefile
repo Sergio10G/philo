@@ -6,19 +6,23 @@
 #    By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/08 16:28:33 by sdiez-ga          #+#    #+#              #
-#    Updated: 2022/11/08 18:00:28 by sdiez-ga         ###   ########.fr        #
+#    Updated: 2022/11/09 19:59:55 by sdiez-ga         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		=	philo
 
-SRC			=	./philo.c
+SRC			=	./philo.c						\
+				./init_structs.c				\
+				./input_parse.c					\
+				./utils.c						\
+				./print_funcs.c
 
 OBJS		=	${SRC:.c=.o}
 
 CC			=	gcc
 
-CFLAGS		=	-Wall -Werror -Wextra -fsanitize=address
+CFLAGS		=	-Wall -Werror -Wextra -fsanitize=address 
 
 RM			=	rm -f
 
@@ -33,14 +37,19 @@ MAKEFLAGS	+=	--silent
 				$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME)		:	$(OBJS)
+				$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
+				@echo "$(PINK)Philosophers compiled!$(RESET)"
 
 all			:	$(NAME)
 
-re			:	fclean all
-
 clean		:
+				$(RM) $(OBJS)
+				@echo "$(PINK)Philosophers objs cleaned!$(RESET)"
 
-fclean		:
+fclean		:	clean
+				$(RM) $(NAME)
+				@echo "$(PINK)Philosophers binary deleted!$(RESET)"
 
+re			:	fclean all
 
 .PHONY		:	all clean fclean re
