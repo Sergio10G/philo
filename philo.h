@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/09 19:59:00 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/10 14:23:37 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,18 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <time.h>
+# include <sys/time.h>
 # include <string.h>
 
 //	Consts & macros
+
+# define C_RED		"\033[0;31m"
+# define C_GREEN	"\033[0;32m"
+# define C_YELLOW	"\033[0;33m"
+# define C_BLUE		"\033[0;34m"
+# define C_PURPLE	"\033[0;35m"
+# define C_CYAN		"\033[0;36m"
+# define C_RESET	"\033[0;0m"
 
 //	Structs & types
 
@@ -37,9 +45,10 @@ typedef struct s_philodata
 
 typedef struct s_philo
 {
-	int				start_time;
 	int				index;
-	int				last_time_eaten;
+	long int		start_time;
+	long int		last_time_eaten;
+	char			state;
 	pthread_t		thread_id;
 	pthread_mutex_t	*fork_arr;
 	t_philodata		*philodata;
@@ -47,6 +56,7 @@ typedef struct s_philo
 
 typedef struct s_gldata
 {
+	struct timeval	tv;
 	t_philodata		*philodata;
 	t_philo			**philo_arr;
 	pthread_mutex_t	*fork_arr;
@@ -54,11 +64,15 @@ typedef struct s_gldata
 
 //	Function prototypes
 
-//	input_parse.c functions
-int			parse_input(int argc, char **argv, t_philodata *pd);
-
 //	philo.c functions
 void		free_gldata(t_gldata *gldata);
+
+//	thread_funcs.c functions
+void	*thread_routine(void *arg);
+long int	philo_action(int philo_ind, char *action_msg, char *color, long int st);
+
+//	input_parse.c functions
+int			parse_input(int argc, char **argv, t_philodata *pd);
 
 //	init_structs.c functions
 t_philo		*init_philo(t_philodata *pd, pthread_mutex_t *fork_arr, int index);
@@ -67,15 +81,15 @@ t_gldata	*init_gldata(t_philodata *pd);
 int			populate_fork_array(t_gldata *gld);
 int			populate_philo_array(t_gldata *gld);
 
-//	print_funcs.c
-void	print_str(char *str);
-size_t	itoa_off(char *num_str, unsigned int un, int sign);
-void	print_nbr(int n);
-
 //	utils.c functions
 int			ft_strlen(char *str);
 int			ft_isspace(char c);
 int			ft_atoi(const char *str);
 int			is_all_numeric(char *num_str);
+
+//	utils_2.c functions
+void		sleep_ms(int ms);
+long int	get_time_ms(struct timeval tv);
+pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size);
 
 #endif

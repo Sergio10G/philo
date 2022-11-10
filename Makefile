@@ -6,7 +6,7 @@
 #    By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/08 16:28:33 by sdiez-ga          #+#    #+#              #
-#    Updated: 2022/11/09 19:59:55 by sdiez-ga         ###   ########.fr        #
+#    Updated: 2022/11/10 14:22:55 by sdiez-ga         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ SRC			=	./philo.c						\
 				./init_structs.c				\
 				./input_parse.c					\
 				./utils.c						\
-				./print_funcs.c
+				./utils_2.c						\
+				./thread_funcs.c
 
 OBJS		=	${SRC:.c=.o}
 
@@ -28,26 +29,34 @@ RM			=	rm -f
 
 GREEN		=	\033[1;32m
 PINK		=	\033[1;35m
+PINK_BG		=	\033[7;35m
 BLUE		=	\033[1;36m
 RESET		=	\033[1;0m
-
-MAKEFLAGS	+=	--silent
+GRAY		=	\033[2;37m
 
 %.o			:	%.c
+				@printf "$(GRAY)"
 				$(CC) $(CFLAGS) -c $< -o $@
+				@printf "$(RESET)"
 
 $(NAME)		:	$(OBJS)
+				@printf "$(GRAY)"
 				$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
-				@echo "$(PINK)Philosophers compiled!$(RESET)"
+				@printf "$(RESET)"
+				@echo "$(PINK_BG)Philosophers compiled!$(RESET)"
 
 all			:	$(NAME)
 
 clean		:
+				@printf "$(GRAY)"
 				$(RM) $(OBJS)
+				@printf "$(RESET)"
 				@echo "$(PINK)Philosophers objs cleaned!$(RESET)"
 
 fclean		:	clean
+				@printf "$(GRAY)"
 				$(RM) $(NAME)
+				@printf "$(RESET)"
 				@echo "$(PINK)Philosophers binary deleted!$(RESET)"
 
 re			:	fclean all

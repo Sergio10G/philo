@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:56:38 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/09 19:26:21 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/10 13:59:03 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_philo	*init_philo(t_philodata *pd, pthread_mutex_t *fork_arr, int index)
 	if (!philo)
 		return (0);
 	memset(philo, 0, sizeof(t_philo));
+	philo->state = 1;
 	philo->philodata = pd;
 	philo->index = index;
 	philo->fork_arr = fork_arr;
