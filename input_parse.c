@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:30:32 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/09 18:24:49 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/11 14:02:06 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	parse_input(int argc, char **argv, t_philodata *pd)
 		nums[i - 1] = parsed_num;
 		i++;
 	}
+	pd->simul_active = 1;
 	pd->philo_count = nums[0];
 	pd->tm_die = nums[1];
 	pd->tm_eat = nums[2];

@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/10 14:12:29 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/11 14:38:10 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,35 @@ int	main(int argc, char **argv)
 	}
 	error_comp = populate_fork_array(gld);
 	error_comp += populate_philo_array(gld);
-	gettimeofday(&(gld->tv), 0);
-	long int time = get_time_ms(gld->tv);
+	long int time = get_time_ms();
 	for (int i = 0; i < gld->philodata->philo_count; i++)
 	{
 		gld->philo_arr[i]->start_time = time;
 		pthread_create(&(gld->philo_arr[i]->thread_id), 0, &thread_routine, gld->philo_arr[i]);
 		//pthread_join(gld->philo_arr[i]->thread_id, 0);
 	}
-	int i = 0;
+	int 	i;
 	while (1)
 	{
-		i = 1;
+		i = 0;
+		while (i < gld->philodata->philo_count)
+		{
+			if (get_time_ms() - gld->philo_arr[i]->start_time - gld->philo_arr[i]->last_time_eaten > gld->philodata->tm_die)
+			{
+				gld->philo_arr[i]->state = 0;
+				gld->philodata->simul_active = 0;
+				pthread_join(gld->philo_arr[i]->thread_id, 0);
+				break ;
+			}
+		}
+		if (!gld->philodata->simul_active)
+		{
+			// free all
+			printf("MAIN THREAD STOPPED\n");
+			break ;
+		}
 	}
+	
 }
 
 //	FIXME

@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/10 14:23:37 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/11 14:01:51 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_philodata
 	int		tm_eat;
 	int		tm_sleep;
 	int		eat_times_count;
+	char	simul_active;
 }			t_philodata;
 
 typedef struct s_philo
@@ -56,7 +57,6 @@ typedef struct s_philo
 
 typedef struct s_gldata
 {
-	struct timeval	tv;
 	t_philodata		*philodata;
 	t_philo			**philo_arr;
 	pthread_mutex_t	*fork_arr;
@@ -89,7 +89,7 @@ int			is_all_numeric(char *num_str);
 
 //	utils_2.c functions
 void		sleep_ms(int ms);
-long int	get_time_ms(struct timeval tv);
+long int	get_time_ms();
 pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size);
 
 #endif
