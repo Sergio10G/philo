@@ -6,7 +6,7 @@
 #    By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/08 16:28:33 by sdiez-ga          #+#    #+#              #
-#    Updated: 2022/11/10 14:22:55 by sdiez-ga         ###   ########.fr        #
+#    Updated: 2022/11/14 12:42:01 by sdiez-ga         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ OBJS		=	${SRC:.c=.o}
 
 CC			=	gcc
 
-CFLAGS		=	-Wall -Werror -Wextra -fsanitize=address 
+CFLAGS		=	-Wall -Werror -Wextra 
 
 RM			=	rm -f
 

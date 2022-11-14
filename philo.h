@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/11 14:01:51 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:14:35 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,11 @@ typedef struct s_philo
 {
 	int				index;
 	long int		start_time;
-	long int		last_time_eaten;
+	long int		lte;
 	char			state;
 	pthread_t		thread_id;
-	pthread_mutex_t	*fork_arr;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 	t_philodata		*philodata;
 }					t_philo;
 
@@ -68,8 +69,9 @@ typedef struct s_gldata
 void		free_gldata(t_gldata *gldata);
 
 //	thread_funcs.c functions
-void	*thread_routine(void *arg);
-long int	philo_action(int philo_ind, char *action_msg, char *color, long int st);
+long int	philo_action(int ind, char *action_msg, char *color, long int st);
+void		*thread_routine(void *arg);
+int			eat_routine(t_philo *p);
 
 //	input_parse.c functions
 int			parse_input(int argc, char **argv, t_philodata *pd);
