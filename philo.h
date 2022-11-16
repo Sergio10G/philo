@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/14 16:14:35 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/16 16:51:45 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_philo
 	int				index;
 	long int		start_time;
 	long int		lte;
+	int				times_eaten;
 	char			state;
 	pthread_t		thread_id;
 	pthread_mutex_t	*left_fork;
@@ -66,6 +67,8 @@ typedef struct s_gldata
 //	Function prototypes
 
 //	philo.c functions
+int			alloc_phase(int argc, char **argv, t_philodata **pd, t_gldata **gld);
+void		simulation_phase(t_gldata *gld);
 void		free_gldata(t_gldata *gldata);
 
 //	thread_funcs.c functions

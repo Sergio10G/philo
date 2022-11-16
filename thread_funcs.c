@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/14 16:17:29 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/16 16:26:45 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,14 @@ void	*thread_routine(void *arg)
 		eat_return = eat_routine(philo);
 		if (!eat_return || !philo->philodata->simul_active)
 			break ;
+		if (philo->times_eaten == philo->philodata->eat_times_count)
+			break;
 		philo_action(philo->index, "is sleeping", C_PURPLE, philo->start_time);
 		sleep_ms(philo->philodata->tm_sleep);
 	}
 	if (!philo->state)
 		philo_action(philo->index, "died", C_RED, philo->start_time);
+	philo->state = 0;
 	return 0;
 }
 
@@ -60,5 +63,6 @@ int	eat_routine(t_philo *p)
 	sleep_ms(p->philodata->tm_eat);
 	pthread_mutex_unlock(p->left_fork);
 	pthread_mutex_unlock(p->right_fork);
+	p->times_eaten++;
 	return (1);
 }

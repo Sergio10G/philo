@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:56:38 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/14 16:15:58 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/11/16 16:34:25 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,9 @@ int	populate_fork_array(t_gldata *gld)
 		mutex_error = pthread_mutex_init(gld->fork_arr + i ,0);
 		if (mutex_error != 0)
 		{
-			while (--i)
+			while (--i >= 0)
 				pthread_mutex_destroy(gld->fork_arr + i);
+			gld->fork_arr = 0;
 			return (0);
 		}
 		i++;
@@ -93,8 +94,9 @@ int	populate_philo_array(t_gldata *gld)
 		gld->philo_arr[i] = init_philo(gld->philodata, gld->fork_arr, i);
 		if (!gld->philo_arr[i])
 		{
-			while (--i)
+			while (--i >= 0)
 				free(gld->philo_arr[i]);
+			free(gld->philo_arr);
 			return (0);
 		}
 		i++;
