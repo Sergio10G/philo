@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 19:06:20 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/01 20:19:20 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@
 
 typedef struct s_philodata
 {
-	int			philo_count;
-	int			tm_die;
-	int			tm_eat;
-	int			tm_sleep;
-	int			eat_times_count;
-	char		simul_active;
+	int				philo_count;
+	int				tm_die;
+	int				tm_eat;
+	int				tm_sleep;
+	int				eat_times_count;
+	char			simul_active;
 	pthread_mutex_t	*simul_mutex;
 }			t_philodata;
 
@@ -74,13 +74,17 @@ int				alloc_phase(int argc, char **argv, \
 							t_philodata **pd, t_gldata **gld);
 void			launch_phase(t_gldata *gld);
 void			simulation_phase(t_gldata *gld);
+
+//	free_funcs.c functions
 void			free_gldata(t_gldata *gldata);
+void			free_philo_array(t_gldata *gld);
+void			free_mutex_arrays(t_gldata *gld);
+void			free_philodata(t_gldata *gld);
 
 //	thread_funcs.c functions
-long int	philo_action(t_philo *p, char *action_msg, char *color);
+long int		philo_action(t_philo *p, char *action_msg, char *color);
 void			*thread_routine(void *arg);
 int				eat_routine(t_philo *p);
-int	is_simul_active(t_philo *p);
 
 //	input_parse.c functions
 int				parse_input(int argc, char **argv, t_philodata *pd);
@@ -90,8 +94,7 @@ t_philo			*init_philo(t_philodata *pd, pthread_mutex_t *fork_arr, \
 							int index);
 t_philodata		*init_philodata(void);
 t_gldata		*init_gldata(t_philodata *pd);
-int				populate_fork_array(t_gldata *gld);
-int				populate_state_array(t_gldata *gld);
+int				populate_mutex_arrays(t_gldata *gld);
 int				populate_philo_array(t_gldata *gld);
 
 //	utils.c functions
@@ -104,5 +107,7 @@ int				is_all_numeric(char *num_str);
 void			sleep_ms(int ms);
 long int		get_time_ms(void);
 pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size);
+int				is_simul_active(t_philodata *pd);
+int				simul_and_philo_alive(t_philo *p);
 
 #endif

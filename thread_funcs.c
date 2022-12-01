@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 19:11:57 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/01 20:11:36 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 long int	philo_action(t_philo *p, char *action_msg, char *color)
 {
-	long int	time;
+	long int	t;
 
-	time = get_time_ms() - p->start_time;
+	t = get_time_ms() - p->start_time;
 	pthread_mutex_lock(p->philodata->simul_mutex);
 	if (p->philodata->simul_active)
-		printf("%s%ld\t%d %s%s\n", color, time, p->index + 1, action_msg, C_RESET);
+		printf("%s%ld\t%d %s%s\n", color, t, p->index + 1, action_msg, C_RESET);
 	pthread_mutex_unlock(p->philodata->simul_mutex);
-	return (time);
+	return (t);
 }
 
 void	*thread_routine(void *arg)
@@ -29,23 +29,24 @@ void	*thread_routine(void *arg)
 	t_philo		*p;
 
 	p = (t_philo *)arg;
-	while (is_simul_active(p))
+	while (simul_and_philo_alive(p))
 	{
 		philo_action(p, "is thinking", C_GREEN);
-		if (!is_simul_active(p))
+		if (!simul_and_philo_alive(p))
 			break ;
 		if (!eat_routine(p))
-			break ; 
+			break ;
 		p->times_eaten += 1;
 		if (p->times_eaten == p->philodata->eat_times_count)
 			break ;
-		if (!is_simul_active(p))
+		if (!simul_and_philo_alive(p))
 			break ;
 		philo_action(p, "is sleeping", C_PURPLE);
 		sleep_ms(p->philodata->tm_sleep);
 	}
 	if (!p->state)
-		printf("%s%ld\t%d died%s\n", C_RED, get_time_ms() - p->start_time, p->index + 1, C_RESET);
+		printf("%s%ld\t%d died%s\n", C_RED, get_time_ms() - p->start_time, \
+				p->index + 1, C_RESET);
 	return (0);
 }
 
@@ -62,7 +63,7 @@ int	eat_routine(t_philo *p)
 		pthread_mutex_unlock(p->left_fork);
 		return (0);
 	}
-	if (!is_simul_active(p))
+	if (!simul_and_philo_alive(p))
 	{
 		pthread_mutex_unlock(p->left_fork);
 		return (0);
@@ -74,16 +75,4 @@ int	eat_routine(t_philo *p)
 	pthread_mutex_unlock(p->left_fork);
 	pthread_mutex_unlock(p->right_fork);
 	return (1);
-}
-
-int	is_simul_active(t_philo *p)
-{
-	int	status;
-
-	pthread_mutex_lock(p->state_mutex);
-	pthread_mutex_lock(p->philodata->simul_mutex);
-	status = p->philodata->simul_active && p->state;
-	pthread_mutex_unlock(p->philodata->simul_mutex);
-	pthread_mutex_unlock(p->state_mutex);
-	return (status);
 }

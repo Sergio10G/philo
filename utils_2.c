@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 13:19:28 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 12:43:54 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/01 20:01:06 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,24 @@ pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size)
 	if (i >= arr_size)
 		i = 0;
 	return (fork_arr + i);
+}
+
+int	is_simul_active(t_philodata *pd)
+{
+	int	status;
+
+	pthread_mutex_lock(pd->simul_mutex);
+	status = pd->simul_active;
+	pthread_mutex_unlock(pd->simul_mutex);
+	return (status);
+}
+
+int	simul_and_philo_alive(t_philo *p)
+{
+	int	status;
+
+	pthread_mutex_lock(p->state_mutex);
+	status = (p->state && is_simul_active(p->philodata));
+	pthread_mutex_unlock(p->state_mutex);
+	return (status);
 }

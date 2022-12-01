@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:56:38 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 18:09:59 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/01 19:22:13 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ t_gldata	*init_gldata(t_philodata *pd)
 	return (gld);
 }
 
-int	populate_fork_array(t_gldata *gld)
+int	populate_mutex_arrays(t_gldata *gld)
 {
 	int	i;
 	int	mutex_error;
@@ -80,32 +80,16 @@ int	populate_fork_array(t_gldata *gld)
 	i = 0;
 	while (i < gld->philodata->philo_count)
 	{
-		mutex_error = pthread_mutex_init(gld->fork_arr + i, 0);
-		if (mutex_error != 0)
+		mutex_error = pthread_mutex_init(gld->fork_arr + i, 0) == 0;
+		mutex_error += pthread_mutex_init(gld->state_mutex_arr + i, 0) == 0;
+		if (mutex_error != 2)
 		{
 			while (--i >= 0)
+			{
 				pthread_mutex_destroy(gld->fork_arr + i);
-			gld->fork_arr = 0;
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
-
-int	populate_state_array(t_gldata *gld)
-{
-	int	i;
-	int	mutex_error;
-
-	i = 0;
-	while (i < gld->philodata->philo_count)
-	{
-		mutex_error = pthread_mutex_init(gld->state_mutex_arr + i, 0);
-		if (mutex_error != 0)
-		{
-			while (--i >= 0)
 				pthread_mutex_destroy(gld->state_mutex_arr + i);
+			}
+			gld->fork_arr = 0;
 			gld->state_mutex_arr = 0;
 			return (0);
 		}

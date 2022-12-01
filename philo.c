@@ -6,25 +6,17 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 18:10:52 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/01 20:38:04 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./philo.h"
-
-/*
-void leaks()
-{
-	system("leaks philo");
-}
-*/
 
 int	main(int argc, char **argv)
 {
 	t_philodata	*pd;
 	t_gldata	*gld;
 
-	//atexit(leaks);
 	pd = 0;
 	gld = 0;
 	if (!alloc_phase(argc, argv, &pd, &gld))
@@ -49,10 +41,9 @@ int	alloc_phase(int argc, char **argv, t_philodata **pd, t_gldata **gld)
 		free(*pd);
 		return (0);
 	}
-	error_comp = populate_fork_array(*gld);
+	error_comp = populate_mutex_arrays(*gld);
 	error_comp += populate_philo_array(*gld);
-	error_comp += populate_state_array(*gld);
-	if (error_comp != 3)
+	if (error_comp != 2)
 	{
 		free_gldata(*gld);
 		return (0);
@@ -81,81 +72,29 @@ void	launch_phase(t_gldata *gld)
 
 void	simulation_phase(t_gldata *gld)
 {
-	t_philo	*p;
 	int		i;
 
-	while (1)
+	while (is_simul_active(gld->philodata))
 	{
 		i = -1;
 		while (++i < gld->philodata->philo_count)
 		{
-			p = gld->philo_arr[i];
-			pthread_mutex_lock(p->state_mutex);
-			pthread_mutex_lock(p->philodata->simul_mutex);
-			if (get_time_ms() - p->start_time - p->lte > gld->philodata->tm_die
-				|| p->state == 0)
+			pthread_mutex_lock(gld->philo_arr[i]->state_mutex);
+			if (get_time_ms() - gld->philo_arr[i]->start_time - \
+				gld->philo_arr[i]->lte > gld->philodata->tm_die \
+				|| gld->philo_arr[i]->state == 0)
 			{
-				p->state = 0;
+				gld->philo_arr[i]->state = 0;
+				pthread_mutex_lock(gld->philo_arr[i]->philodata->simul_mutex);
 				gld->philodata->simul_active = 0;
-				pthread_mutex_unlock(p->philodata->simul_mutex);
-				pthread_mutex_unlock(p->state_mutex);
+				pthread_mutex_unlock(gld->philo_arr[i]->philodata->simul_mutex);
+				pthread_mutex_unlock(gld->philo_arr[i]->state_mutex);
 				break ;
 			}
-			pthread_mutex_unlock(p->philodata->simul_mutex);
-			pthread_mutex_unlock(p->state_mutex);
+			pthread_mutex_unlock(gld->philo_arr[i]->state_mutex);
 		}
-		pthread_mutex_lock(gld->philodata->simul_mutex);
-		if (!gld->philodata->simul_active)
-		{
-			pthread_mutex_unlock(gld->philodata->simul_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(gld->philodata->simul_mutex);
 	}
 	i = -1;
 	while (++i < gld->philodata->philo_count)
 		pthread_join(gld->philo_arr[i]->thread_id, 0);
-}
-
-void	free_gldata(t_gldata *gldata)
-{
-	int	i;
-
-	if (gldata->philo_arr)
-	{
-		i = 0;
-		while (i < gldata->philodata->philo_count)
-		{
-			free(gldata->philo_arr[i]);
-			i++;
-		}
-		free(gldata->philo_arr);
-	}
-	if (gldata->fork_arr)
-	{
-		i = 0;
-		while (i < gldata->philodata->philo_count)
-		{
-			pthread_mutex_destroy(gldata->fork_arr + i);
-			i++;
-		}
-		free(gldata->fork_arr);
-	}
-	if (gldata->state_mutex_arr)
-	{
-		i = 0;
-		while (i < gldata->philodata->philo_count)
-		{
-			pthread_mutex_destroy(gldata->state_mutex_arr + i);
-			i++;
-		}
-		free(gldata->state_mutex_arr);
-	}
-	if (gldata->philodata)
-	{
-		pthread_mutex_destroy(gldata->philodata->simul_mutex);
-		free(gldata->philodata->simul_mutex);
-		free(gldata->philodata);
-	}
-	free(gldata);
 }
