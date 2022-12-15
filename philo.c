@@ -6,23 +6,17 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/15 13:17:24 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/15 19:05:47 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./philo.h"
-
-void leaks()
-{
-	system("leaks philo");
-}
 
 int	main(int argc, char **argv)
 {
 	t_philodata	*pd;
 	t_gldata	*gld;
 
-	atexit(leaks);
 	pd = 0;
 	gld = 0;
 	if (!alloc_phase(argc, argv, &pd, &gld))
