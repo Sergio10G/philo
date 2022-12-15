@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/15 13:17:41 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/15 19:20:33 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	*thread_routine(void *arg)
 			break ;
 	}
 	pthread_mutex_lock(p->state_mutex);
-	if (p->state_mutex)
+	if (p->state && p->philodata->eat_times_count != -1)
 		p->state = 2;
 	pthread_mutex_unlock(p->state_mutex);
 	return (0);
