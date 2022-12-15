@@ -6,17 +6,23 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/13 17:53:46 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/15 13:17:24 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./philo.h"
+
+void leaks()
+{
+	system("leaks philo");
+}
 
 int	main(int argc, char **argv)
 {
 	t_philodata	*pd;
 	t_gldata	*gld;
 
+	atexit(leaks);
 	pd = 0;
 	gld = 0;
 	if (!alloc_phase(argc, argv, &pd, &gld))
@@ -82,22 +88,27 @@ void	simulation_phase(t_gldata *gld)
 		i = -1;
 		while (++i < gld->philodata->philo_count)
 		{
-			pthread_mutex_lock(gld->philo_arr[i]->state_mutex);
-			if (get_time_ms() - gld->philo_arr[i]->start_time - \
-				gld->philo_arr[i]->lte > gld->philodata->tm_die \
-				|| gld->philo_arr[i]->state == 0)
+			if (check_death_main(gld->philo_arr[i]))
 			{
+				pthread_mutex_lock(gld->philo_arr[i]->state_mutex);
 				gld->philo_arr[i]->state = 0;
+				pthread_mutex_unlock(gld->philo_arr[i]->state_mutex);
 				pthread_mutex_lock(gld->philo_arr[i]->philodata->simul_mutex);
 				gld->philodata->simul_active = 0;
 				pthread_mutex_unlock(gld->philo_arr[i]->philodata->simul_mutex);
-				pthread_mutex_unlock(gld->philo_arr[i]->state_mutex);
+				die(gld->philo_arr[i]);
 				break ;
 			}
-			pthread_mutex_unlock(gld->philo_arr[i]->state_mutex);
 		}
+		finish_if_everyone_full(gld);
 	}
 	i = -1;
 	while (++i < gld->philodata->philo_count)
 		pthread_join(gld->philo_arr[i]->thread_id, 0);
+}
+
+void	die(t_philo *p)
+{
+	printf("%s%ld\t%d died%s\n", C_RED, get_time_ms() - p->start_time, \
+	p->index + 1, C_RESET);
 }

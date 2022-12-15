@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 13:19:28 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 20:01:06 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/15 13:09:53 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,6 @@ long int	get_time_ms(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size)
-{
-	if (arr_size == 1 && i > 0)
-		return (0);
-	if (i >= arr_size)
-		i = 0;
-	return (fork_arr + i);
-}
-
 int	is_simul_active(t_philodata *pd)
 {
 	int	status;
@@ -56,4 +47,14 @@ int	simul_and_philo_alive(t_philo *p)
 	status = (p->state && is_simul_active(p->philodata));
 	pthread_mutex_unlock(p->state_mutex);
 	return (status);
+}
+
+int	check_death_main(t_philo *p)
+{
+	int	result;
+	pthread_mutex_lock(p->state_mutex);
+	result = ((get_time_ms() - p->start_time - p->lte > p->philodata->tm_die \
+			|| p->state == 0) && p->state != 2);
+	pthread_mutex_unlock(p->state_mutex);
+	return (result);
 }

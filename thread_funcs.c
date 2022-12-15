@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/13 17:44:45 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/15 13:17:41 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,10 @@ void	*thread_routine(void *arg)
 		if (!sleep_routine(p))
 			break ;
 	}
-	if (!p->state)
-		printf("%s%ld\t%d died%s\n", C_RED, get_time_ms() - p->start_time, \
-				p->index + 1, C_RESET);
+	pthread_mutex_lock(p->state_mutex);
+	if (p->state_mutex)
+		p->state = 2;
+	pthread_mutex_unlock(p->state_mutex);
 	return (0);
 }
 
@@ -81,19 +82,42 @@ int	sleep_routine(t_philo *p)
 {
 	long int	now;
 
-	now = get_time_ms() - p->start_time;
+	now = philo_action(p, "is sleeping", C_PURPLE);
 	if (now + p->philodata->tm_sleep > p->lte + p->philodata->tm_die)
 	{
 		sleep_ms((p->lte + p->philodata->tm_die) - now);
 		pthread_mutex_lock(p->state_mutex);
 		p->state = 0;
 		pthread_mutex_unlock(p->state_mutex);
-		pthread_mutex_lock(p->philodata->simul_mutex);
-		p->philodata->simul_active = 0;
-		pthread_mutex_unlock(p->philodata->simul_mutex);
 		return (0);
 	}
-	philo_action(p, "is sleeping", C_PURPLE);
 	sleep_ms(p->philodata->tm_sleep);
 	return (1);
+}
+
+void	finish_if_everyone_full(t_gldata *gld)
+{
+	t_philo		*p;
+	t_philodata	*pd;
+	int			i;
+	int			full_philos;
+
+	i = 0;
+	full_philos = 0;
+	pd = gld->philodata;
+	while (i < pd->philo_count)
+	{
+		p = gld->philo_arr[i];
+		pthread_mutex_lock(p->state_mutex);
+		if (p->state == 2)
+			full_philos++;
+		pthread_mutex_unlock(p->state_mutex);
+		i++;
+	}
+	if (full_philos == pd->philo_count)
+	{
+		pthread_mutex_lock(pd->simul_mutex);
+		pd->simul_active = 0;
+		pthread_mutex_unlock(pd->simul_mutex);
+	}
 }

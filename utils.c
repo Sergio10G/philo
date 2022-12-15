@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:36:31 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/13 18:10:50 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/15 12:16:53 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,13 @@ int	is_all_numeric(char *num_str)
 		i++;
 	}
 	return (1);
+}
+
+pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size)
+{
+	if (arr_size == 1 && i > 0)
+		return (0);
+	if (i >= arr_size)
+		i = 0;
+	return (fork_arr + i);
 }

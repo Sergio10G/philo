@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/13 17:35:37 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/15 13:17:07 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ int				alloc_phase(int argc, char **argv, \
 							t_philodata **pd, t_gldata **gld);
 void			launch_phase(t_gldata *gld);
 void			simulation_phase(t_gldata *gld);
+void			die(t_philo *p);
 
 //	free_funcs.c functions
 void			free_gldata(t_gldata *gldata);
@@ -86,6 +87,7 @@ long int		philo_action(t_philo *p, char *action_msg, char *color);
 void			*thread_routine(void *arg);
 int				eat_routine(t_philo *p);
 int				sleep_routine(t_philo *p);
+void			finish_if_everyone_full(t_gldata *gld);
 
 //	input_parse.c functions
 int				parse_input(int argc, char **argv, t_philodata *pd);
@@ -103,12 +105,13 @@ int				ft_strlen(char *str);
 int				ft_isspace(char c);
 int				ft_atoi(const char *str);
 int				is_all_numeric(char *num_str);
+pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size);
 
 //	utils_2.c functions
 void			sleep_ms(int ms);
 long int		get_time_ms(void);
-pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size);
 int				is_simul_active(t_philodata *pd);
 int				simul_and_philo_alive(t_philo *p);
+int				check_death_main(t_philo *p);
 
 #endif
