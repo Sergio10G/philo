@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 20:38:04 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/13 17:53:46 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,14 @@ int	alloc_phase(int argc, char **argv, t_philodata **pd, t_gldata **gld)
 	if (!*pd)
 		return (0);
 	if (!parse_input(argc, argv, *pd))
+	{
+		free_philodata(*pd);
 		return (0);
+	}
 	*gld = init_gldata(*pd);
 	if (!*gld)
 	{
-		free(*pd);
+		free_philodata(*pd);
 		return (0);
 	}
 	error_comp = populate_mutex_arrays(*gld);

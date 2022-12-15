@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:36:31 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/10 13:20:12 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/13 18:10:50 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	is_all_numeric(char *num_str)
 	i = 0;
 	while (num_str[i])
 	{
-		if (num_str[i] != '-' && !(num_str[i] >= '0' && num_str[i] <= '9'))
+		if (num_str[i] != '+' && !(num_str[i] >= '0' && num_str[i] <= '9'))
 			return (0);
 		i++;
 	}

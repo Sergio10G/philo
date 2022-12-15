@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 20:19:20 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/13 17:35:37 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,13 @@ void			simulation_phase(t_gldata *gld);
 void			free_gldata(t_gldata *gldata);
 void			free_philo_array(t_gldata *gld);
 void			free_mutex_arrays(t_gldata *gld);
-void			free_philodata(t_gldata *gld);
+void			free_philodata(t_philodata *pd);
 
 //	thread_funcs.c functions
 long int		philo_action(t_philo *p, char *action_msg, char *color);
 void			*thread_routine(void *arg);
 int				eat_routine(t_philo *p);
+int				sleep_routine(t_philo *p);
 
 //	input_parse.c functions
 int				parse_input(int argc, char **argv, t_philodata *pd);

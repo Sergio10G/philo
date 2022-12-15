@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 20:11:36 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/13 17:44:45 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ void	*thread_routine(void *arg)
 			break ;
 		if (!simul_and_philo_alive(p))
 			break ;
-		philo_action(p, "is sleeping", C_PURPLE);
-		sleep_ms(p->philodata->tm_sleep);
+		if (!sleep_routine(p))
+			break ;
 	}
 	if (!p->state)
 		printf("%s%ld\t%d died%s\n", C_RED, get_time_ms() - p->start_time, \
@@ -56,7 +56,7 @@ int	eat_routine(t_philo *p)
 	philo_action(p, "has taken a fork", C_CYAN);
 	if (!p->right_fork)
 	{
-		sleep_ms(p->philodata->tm_sleep);
+		sleep_ms(p->philodata->tm_die);
 		pthread_mutex_lock(p->state_mutex);
 		p->state = 0;
 		pthread_mutex_unlock(p->state_mutex);
@@ -74,5 +74,26 @@ int	eat_routine(t_philo *p)
 	sleep_ms(p->philodata->tm_eat);
 	pthread_mutex_unlock(p->left_fork);
 	pthread_mutex_unlock(p->right_fork);
+	return (1);
+}
+
+int	sleep_routine(t_philo *p)
+{
+	long int	now;
+
+	now = get_time_ms() - p->start_time;
+	if (now + p->philodata->tm_sleep > p->lte + p->philodata->tm_die)
+	{
+		sleep_ms((p->lte + p->philodata->tm_die) - now);
+		pthread_mutex_lock(p->state_mutex);
+		p->state = 0;
+		pthread_mutex_unlock(p->state_mutex);
+		pthread_mutex_lock(p->philodata->simul_mutex);
+		p->philodata->simul_active = 0;
+		pthread_mutex_unlock(p->philodata->simul_mutex);
+		return (0);
+	}
+	philo_action(p, "is sleeping", C_PURPLE);
+	sleep_ms(p->philodata->tm_sleep);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:30:32 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/11/11 14:02:06 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2022/12/13 18:29:57 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int	parse_input(int argc, char **argv, t_philodata *pd)
 	{
 		parsed_num = ft_atoi(argv[i]);
 		if (parsed_num < 0 || (parsed_num == 0 && ft_strlen(argv[i]) != 1) || \
-			!is_all_numeric(argv[i]))
+			(parsed_num == 0 && ft_strlen(argv[i]) == 1 && \
+			argv[i][0] != '0') || !is_all_numeric(argv[i]))
 			return (0);
 		nums[i - 1] = parsed_num;
 		i++;
