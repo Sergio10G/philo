@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:56:38 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/01 19:22:13 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/06 16:02:51 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_philo	*init_philo(t_philodata *pd, pthread_mutex_t *fork_arr, int index)
 {
-	t_philo		*philo;
+	t_philo	*philo;
 
 	philo = malloc(sizeof(t_philo));
 	if (!philo)
@@ -58,15 +58,11 @@ t_gldata	*init_gldata(t_philodata *pd)
 	gld->philo_arr = malloc(pd->philo_count * sizeof(t_philo *));
 	gld->fork_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
 	gld->state_mutex_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
-	if (!gld->philo_arr || !gld->fork_arr || !gld->state_mutex_arr)
+	gld->lte_mutex_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
+	if (!gld->philo_arr || !gld->fork_arr || !gld->state_mutex_arr || \
+		!gld->lte_mutex_arr)
 	{
-		if (!gld->philo_arr)
-			free(gld->philo_arr);
-		if (!gld->fork_arr)
-			free(gld->fork_arr);
-		if (gld->state_mutex_arr)
-			free(gld->state_mutex_arr);
-		free(gld);
+		free_gldata(gld);
 		return (0);
 	}
 	return (gld);
@@ -80,17 +76,12 @@ int	populate_mutex_arrays(t_gldata *gld)
 	i = 0;
 	while (i < gld->philodata->philo_count)
 	{
-		mutex_error = pthread_mutex_init(gld->fork_arr + i, 0) == 0;
-		mutex_error += pthread_mutex_init(gld->state_mutex_arr + i, 0) == 0;
-		if (mutex_error != 2)
+		mutex_error = pthread_mutex_init(gld->fork_arr + i, 0);
+		mutex_error += pthread_mutex_init(gld->state_mutex_arr + i, 0);
+		mutex_error += pthread_mutex_init(gld->lte_mutex_arr + i, 0);
+		if (mutex_error)
 		{
-			while (--i >= 0)
-			{
-				pthread_mutex_destroy(gld->fork_arr + i);
-				pthread_mutex_destroy(gld->state_mutex_arr + i);
-			}
-			gld->fork_arr = 0;
-			gld->state_mutex_arr = 0;
+			free_mutex_arrays(gld);
 			return (0);
 		}
 		i++;
@@ -111,6 +102,7 @@ int	populate_philo_array(t_gldata *gld)
 			while (--i >= 0)
 				free(gld->philo_arr[i]);
 			free(gld->philo_arr);
+			gld->philo_arr = 0;
 			return (0);
 		}
 		i++;

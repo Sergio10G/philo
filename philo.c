@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/15 19:05:47 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/06 19:18:28 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(int argc, char **argv)
 
 int	alloc_phase(int argc, char **argv, t_philodata **pd, t_gldata **gld)
 {
-	int			error_comp;
+	int	error_comp;
 
 	*pd = init_philodata();
 	if (!*pd)
@@ -67,15 +67,16 @@ void	launch_phase(t_gldata *gld)
 		p = gld->philo_arr[i];
 		p->start_time = time;
 		p->state_mutex = gld->state_mutex_arr + i;
+		p->lte_mutex = gld->lte_mutex_arr + i;
 		pthread_create(&(p->thread_id), 0, &thread_routine, p);
-		sleep_ms(1);
+		usleep(100);
 		i++;
 	}
 }
 
 void	simulation_phase(t_gldata *gld)
 {
-	int		i;
+	int	i;
 
 	while (is_simul_active(gld->philodata))
 	{
@@ -90,7 +91,7 @@ void	simulation_phase(t_gldata *gld)
 				pthread_mutex_lock(gld->philo_arr[i]->philodata->simul_mutex);
 				gld->philodata->simul_active = 0;
 				pthread_mutex_unlock(gld->philo_arr[i]->philodata->simul_mutex);
-				die(gld->philo_arr[i]);
+				announce_death(gld->philo_arr[i]);
 				break ;
 			}
 		}
@@ -101,7 +102,7 @@ void	simulation_phase(t_gldata *gld)
 		pthread_join(gld->philo_arr[i]->thread_id, 0);
 }
 
-void	die(t_philo *p)
+void	announce_death(t_philo *p)
 {
 	printf("%s%ld\t%d died%s\n", C_RED, get_time_ms() - p->start_time, \
 	p->index + 1, C_RESET);

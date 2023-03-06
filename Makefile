@@ -6,7 +6,7 @@
 #    By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/08 16:28:33 by sdiez-ga          #+#    #+#              #
-#    Updated: 2022/12/15 11:48:32 by sdiez-ga         ###   ########.fr        #
+#    Updated: 2023/03/06 19:15:42 by sdiez-ga         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,9 @@ SRC			=	./philo.c						\
 				./utils.c						\
 				./utils_2.c						\
 				./free_funcs.c					\
-				./thread_funcs.c
+				./thread_funcs.c				\
+				./thread_funcs_2.c				\
+				./control_funcs.c
 
 OBJS		=	${SRC:.c=.o}
 

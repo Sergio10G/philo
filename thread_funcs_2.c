@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_2.c                                          :+:      :+:    :+:   */
+/*   thread_funcs_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/10 13:19:28 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2022/12/19 17:22:45 by sdiez-ga         ###   ########.fr       */
+/*   Created: 2023/03/06 14:51:01 by sdiez-ga          #+#    #+#             */
+/*   Updated: 2023/03/06 14:51:17 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./philo.h"
 
-void	sleep_ms(int ms)
+int	eat_return(t_philo *p)
 {
-	long int	desired_time_us;
+	int	ret_val;
 
-	desired_time_us = (get_time_ms() + ms) * 1000;
-	while (get_time_ms() * 1000 < desired_time_us)
-		usleep(ms);
-}
-
-long int	get_time_ms(void)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, 0);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	pthread_mutex_lock(p->state_mutex);
+	ret_val = p->state;
+	pthread_mutex_unlock(p->state_mutex);
+	return (ret_val);
 }
