@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/06 19:18:24 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/07 18:12:06 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,17 @@ typedef struct s_philo
 	t_philodata		*philodata;
 }					t_philo;
 
+typedef struct s_ph_monitor
+{
+	t_philo		*philo;
+	pthread_t	thread_id;
+}					t_ph_monitor;
+
 typedef struct s_gldata
 {
 	t_philodata		*philodata;
 	t_philo			**philo_arr;
+	t_ph_monitor	**ph_monitor_arr;
 	pthread_mutex_t	*fork_arr;
 	pthread_mutex_t	*state_mutex_arr;
 	pthread_mutex_t	*lte_mutex_arr;
@@ -81,6 +88,7 @@ void			announce_death(t_philo *p);
 //	free_funcs.c functions
 void			free_gldata(t_gldata *gldata);
 void			free_philo_array(t_gldata *gld);
+void			free_monitor_array(t_gldata *gld);
 void			free_mutex_arrays(t_gldata *gld);
 void			free_philodata(t_philodata *pd);
 
@@ -93,6 +101,7 @@ int				die_during_action(t_philo *p, long int now, int action_time);
 
 // thread_funcs_2.c functions
 int				eat_return(t_philo *p);
+void			*monitor_routine(void *arg);
 
 //	control_funcs.c functions
 int				is_simul_active(t_philodata *pd);
@@ -104,12 +113,15 @@ void			finish_if_everyone_full(t_gldata *gld);
 int				parse_input(int argc, char **argv, t_philodata *pd);
 
 //	init_structs.c functions
-t_philo			*init_philo(t_philodata *pd, pthread_mutex_t *fork_arr, \
-							int index);
+t_philo			*init_philo(t_philodata *pd, int index);
 t_philodata		*init_philodata(void);
 t_gldata		*init_gldata(t_philodata *pd);
 int				populate_mutex_arrays(t_gldata *gld);
-int				populate_philo_array(t_gldata *gld);
+int				populate_philo_arrays(t_gldata *gld);
+
+//	init_structs_2.c functions
+void			assign_mutexes(t_gldata *gld);
+t_ph_monitor	*init_ph_monitor(t_philo *p);
 
 //	utils.c functions
 int				ft_strlen(char *str);
@@ -121,5 +133,8 @@ pthread_mutex_t	*get_fork(int i, pthread_mutex_t *fork_arr, int arr_size);
 //	utils_2.c functions
 void			sleep_ms(int ms);
 long int		get_time_ms(void);
+void			ft_putstr(char *str);
+void			ft_putlong(long int n);
+char			*rev_num(char *temp, int last_pos);
 
 #endif

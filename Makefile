@@ -6,7 +6,7 @@
 #    By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/08 16:28:33 by sdiez-ga          #+#    #+#              #
-#    Updated: 2023/03/06 19:15:42 by sdiez-ga         ###   ########.fr        #
+#    Updated: 2023/03/07 16:18:47 by sdiez-ga         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ NAME		=	philo
 
 SRC			=	./philo.c						\
 				./init_structs.c				\
+				./init_structs_2.c				\
 				./input_parse.c					\
 				./utils.c						\
 				./utils_2.c						\

@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/06 19:18:26 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/07 17:07:26 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,17 @@ long int	philo_action(t_philo *p, char *action_msg, char *color)
 	t = get_time_ms() - p->start_time;
 	pthread_mutex_lock(p->philodata->simul_mutex);
 	if (p->philodata->simul_active)
-		printf("%s%ld\t%d %s%s\n", color, t, p->index + 1, action_msg, C_RESET);
+	{
+		ft_putstr(color);
+		ft_putlong(t);
+		write(1, "\t", 1);
+		ft_putlong(p->index + 1);
+		write(1, " ", 1);
+		ft_putstr(action_msg);
+		ft_putstr(C_RESET);
+		write(1, "\n", 1);
+	}
+	//	printf("%s%ld\t%d %s%s\n", color, t, p->index + 1, action_msg, C_RESET);
 	pthread_mutex_unlock(p->philodata->simul_mutex);
 	return (t);
 }
