@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:56:38 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/07 18:12:50 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/21 18:21:29 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,15 @@ t_gldata	*init_gldata(t_philodata *pd)
 	gld = malloc(sizeof(t_gldata));
 	if (!gld)
 		return (0);
+	memset(gld, 0, sizeof(t_gldata));
 	gld->philodata = pd;
 	gld->philo_arr = malloc(pd->philo_count * sizeof(t_philo *));
-	gld->ph_monitor_arr = malloc(pd->philo_count * sizeof(t_ph_monitor *));
 	gld->fork_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
 	gld->state_mutex_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
 	gld->lte_mutex_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
+	gld->ph_monitor_arr = malloc(pd->philo_count * sizeof(t_ph_monitor *));
 	if (!gld->philo_arr || !gld->fork_arr || !gld->state_mutex_arr || \
-		!gld->lte_mutex_arr)
+		!gld->lte_mutex_arr || !gld->ph_monitor_arr)
 	{
 		free_gldata(gld);
 		return (0);
@@ -79,10 +80,7 @@ int	populate_mutex_arrays(t_gldata *gld)
 		mutex_error += pthread_mutex_init(gld->state_mutex_arr + i, 0);
 		mutex_error += pthread_mutex_init(gld->lte_mutex_arr + i, 0);
 		if (mutex_error)
-		{
-			free_mutex_arrays(gld);
 			return (0);
-		}
 		i++;
 	}
 	return (1);
@@ -98,19 +96,7 @@ int	populate_philo_arrays(t_gldata *gld)
 		gld->philo_arr[i] = init_philo(gld->philodata, i);
 		gld->ph_monitor_arr[i] = init_ph_monitor(gld->philo_arr[i]);
 		if (!gld->philo_arr[i] || !gld->ph_monitor_arr[i])
-		{
-			// PUEDE CAUSAR LEAKS
-			while (--i >= 0)
-			{
-				free(gld->philo_arr[i]);
-				free(gld->ph_monitor_arr[i]);
-			}
-			free(gld->philo_arr);
-			free(gld->ph_monitor_arr);
-			gld->philo_arr = 0;
-			gld->ph_monitor_arr = 0;
 			return (0);
-		}
 		i++;
 	}
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/07 17:07:26 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/21 19:28:09 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ long int	philo_action(t_philo *p, char *action_msg, char *color)
 		ft_putstr(C_RESET);
 		write(1, "\n", 1);
 	}
-	//	printf("%s%ld\t%d %s%s\n", color, t, p->index + 1, action_msg, C_RESET);
 	pthread_mutex_unlock(p->philodata->simul_mutex);
 	return (t);
 }
@@ -83,6 +82,7 @@ int	eat_routine(t_philo *p)
 	philo_action(p, "has taken a fork", C_CYAN);
 	pthread_mutex_lock(p->lte_mutex);
 	p->lte = philo_action(p, "is eating", C_BLUE);
+	//ft_putstr("after\n");
 	pthread_mutex_unlock(p->lte_mutex);
 	die_during_action(p, p->lte, p->philodata->tm_eat);
 	pthread_mutex_unlock(p->left_fork);

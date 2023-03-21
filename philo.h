@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/07 18:12:06 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/21 18:34:56 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 # include <pthread.h>
 # include <unistd.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include <string.h>

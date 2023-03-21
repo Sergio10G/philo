@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 20:10:47 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/07 18:13:32 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/21 19:05:14 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,11 @@ void	free_philo_array(t_gldata *gld)
 	{
 		if (gld->philo_arr[i])
 			free(gld->philo_arr[i]);
+		gld->philo_arr[i] = 0;
 		i++;
 	}
 	free(gld->philo_arr);
+	gld->philo_arr = 0;
 }
 
 void	free_monitor_array(t_gldata *gld)
@@ -48,9 +50,11 @@ void	free_monitor_array(t_gldata *gld)
 	{
 		if (gld->ph_monitor_arr[i])
 			free(gld->ph_monitor_arr[i]);
+		gld->ph_monitor_arr[i] = 0;
 		i++;
 	}
 	free(gld->ph_monitor_arr);
+	gld->ph_monitor_arr = 0;
 }
 
 void	free_mutex_arrays(t_gldata *gld)
@@ -70,15 +74,22 @@ void	free_mutex_arrays(t_gldata *gld)
 	}
 	if (gld->fork_arr)
 		free(gld->fork_arr);
+	gld->fork_arr = 0;
 	if (gld->state_mutex_arr)
 		free(gld->state_mutex_arr);
+	gld->state_mutex_arr = 0;
 	if (gld->lte_mutex_arr)
 		free(gld->lte_mutex_arr);
+	gld->lte_mutex_arr = 0;
 }
 
 void	free_philodata(t_philodata *pd)
 {
+	if (!pd)
+		return ;
 	pthread_mutex_destroy(pd->simul_mutex);
 	free(pd->simul_mutex);
-	free(pd);
+	pd->simul_mutex = 0;
+	if (pd)
+		free(pd);
 }

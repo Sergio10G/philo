@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/07 18:28:56 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/21 19:27:56 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@ int	alloc_phase(int argc, char **argv, t_philodata **pd, t_gldata **gld)
 	}
 	error_comp = populate_mutex_arrays(*gld);
 	error_comp += populate_philo_arrays(*gld);
-	assign_mutexes(*gld);
 	if (error_comp != 2)
 	{
 		free_gldata(*gld);
 		return (0);
 	}
+	assign_mutexes(*gld);
 	return (1);
 }
 
@@ -70,7 +70,7 @@ void	launch_phase(t_gldata *gld)
 		p = gld->philo_arr[i];
 		p->start_time = time;
 		pthread_create(&(pm->thread_id), 0, &monitor_routine, pm);
-		usleep(100);
+		usleep(1000);
 		i++;
 	}
 }
@@ -91,6 +91,14 @@ void	simulation_phase(t_gldata *gld)
 
 void	announce_death(t_philo *p)
 {
+	pthread_mutex_lock(p->philodata->simul_mutex);
+	if (p->philodata->simul_active == 0)
+	{
+		pthread_mutex_unlock(p->philodata->simul_mutex);
+		return ;
+	}
+	p->philodata->simul_active = 0;
+	pthread_mutex_unlock(p->philodata->simul_mutex);
 	ft_putstr(C_RED);
 	ft_putlong(get_time_ms() - p->start_time);
 	write(1, "\t", 1);
@@ -98,6 +106,4 @@ void	announce_death(t_philo *p)
 	ft_putstr(" died");
 	ft_putstr(C_RESET);
 	write(1, "\n", 1);
-	// printf("%s%ld\t%d died%s\n", C_RED, get_time_ms() - p->start_time, \
-	// p->index + 1, C_RESET);
 }

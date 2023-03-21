@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/06 14:51:01 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/07 18:14:40 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/21 19:08:50 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	eat_return(t_philo *p)
 	return (ret_val);
 }
 
-
 void	*monitor_routine(void *arg)
 {
 	t_philo			*p;
@@ -31,8 +30,6 @@ void	*monitor_routine(void *arg)
 	pm = (t_ph_monitor *)arg;
 	p = pm->philo;
 	pthread_create(&(p->thread_id), 0, &thread_routine, p);
-
-	// Checkeos de muerte, llenos, and stuff
 	while (is_simul_active(p->philodata))
 	{
 		if (check_death_main(p))
@@ -40,9 +37,6 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(p->state_mutex);
 			p->state = 0;
 			pthread_mutex_unlock(p->state_mutex);
-			pthread_mutex_lock(p->philodata->simul_mutex);
-			p->philodata->simul_active = 0;
-			pthread_mutex_unlock(p->philodata->simul_mutex);
 			announce_death(p);
 			break ;
 		}
