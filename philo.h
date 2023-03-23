@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/23 13:33:09 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/23 14:09:57 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define C_BLUE		"\033[0;34m"
 # define C_PURPLE	"\033[0;35m"
 # define C_CYAN		"\033[0;36m"
+# define C_GRAY		"\033[2;37m"
 # define C_RESET	"\033[0;0m"
 
 //	Structs & types

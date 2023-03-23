@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/06 14:51:01 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/23 13:50:41 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/23 14:13:23 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	*monitor_routine(void *arg)
 			announce_death(p);
 			break ;
 		}
-		usleep(500);
+		sleep_ms(1);
 	}
 	pthread_join(p->thread_id, 0);
 	return (0);
