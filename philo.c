@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/21 19:27:56 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/03/23 13:50:57 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	launch_phase(t_gldata *gld)
 		p = gld->philo_arr[i];
 		p->start_time = time;
 		pthread_create(&(pm->thread_id), 0, &monitor_routine, pm);
-		usleep(1000);
+		usleep(100);
 		i++;
 	}
 }
