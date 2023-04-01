@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/23 13:50:57 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:43:13 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,20 @@ int	alloc_phase(int argc, char **argv, t_philodata **pd, t_gldata **gld)
 
 void	launch_phase(t_gldata *gld)
 {
-	t_philo			*p;
 	t_ph_monitor	*pm;
 	long int		time;
 	int				i;
 
 	time = get_time_ms();
+	gld->philodata->start_time = time;
 	i = 0;
-	while (i < gld->philodata->philo_count)
+	while (i * PHILOS_PER_MONITOR < gld->philodata->philo_count)
 	{
+		pthread_mutex_lock(gld->monitor_mutex);
 		pm = gld->ph_monitor_arr[i];
-		p = gld->philo_arr[i];
-		p->start_time = time;
+		pm->index = i;
 		pthread_create(&(pm->thread_id), 0, &monitor_routine, pm);
+		pthread_mutex_unlock(gld->monitor_mutex);
 		usleep(100);
 		i++;
 	}
@@ -85,25 +86,6 @@ void	simulation_phase(t_gldata *gld)
 		sleep_ms(gld->philodata->tm_eat);
 	}
 	i = -1;
-	while (++i < gld->philodata->philo_count)
+	while (++i * PHILOS_PER_MONITOR < gld->philodata->philo_count)
 		pthread_join(gld->ph_monitor_arr[i]->thread_id, 0);
-}
-
-void	announce_death(t_philo *p)
-{
-	pthread_mutex_lock(p->philodata->simul_mutex);
-	if (p->philodata->simul_active == 0)
-	{
-		pthread_mutex_unlock(p->philodata->simul_mutex);
-		return ;
-	}
-	p->philodata->simul_active = 0;
-	pthread_mutex_unlock(p->philodata->simul_mutex);
-	ft_putstr(C_RED);
-	ft_putlong(get_time_ms() - p->start_time);
-	write(1, "\t", 1);
-	ft_putlong(p->index + 1);
-	ft_putstr(" died");
-	ft_putstr(C_RESET);
-	write(1, "\n", 1);
 }

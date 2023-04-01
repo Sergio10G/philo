@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/23 16:43:04 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:33:22 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ long int	philo_action(t_philo *p, char *action_msg, char *color)
 {
 	long int	t;
 
-	t = get_time_ms() - p->start_time;
+	t = get_time_ms() - p->philodata->start_time;
 	pthread_mutex_lock(p->philodata->simul_mutex);
 	if (p->philodata->simul_active)
 	{
 		ft_putstr(color);
 		ft_putlong(t);
 		write(1, "\t", 1);
-		ft_putlong(p->index + 1);
+		ft_putlong(p->index);
 		write(1, " ", 1);
 		ft_putstr(action_msg);
 		ft_putstr(C_RESET);
@@ -31,6 +31,25 @@ long int	philo_action(t_philo *p, char *action_msg, char *color)
 	}
 	pthread_mutex_unlock(p->philodata->simul_mutex);
 	return (t);
+}
+
+void	announce_death(t_philo *p)
+{
+	pthread_mutex_lock(p->philodata->simul_mutex);
+	if (p->philodata->simul_active == 0)
+	{
+		pthread_mutex_unlock(p->philodata->simul_mutex);
+		return ;
+	}
+	p->philodata->simul_active = 0;
+	pthread_mutex_unlock(p->philodata->simul_mutex);
+	ft_putstr(C_RED);
+	ft_putlong(get_time_ms() - p->philodata->start_time);
+	write(1, "\t", 1);
+	ft_putlong(p->index);
+	ft_putstr(" died");
+	ft_putstr(C_RESET);
+	write(1, "\n", 1);
 }
 
 void	*thread_routine(void *arg)
@@ -95,23 +114,4 @@ int	sleep_routine(t_philo *p)
 
 	now = philo_action(p, "is sleeping", C_PURPLE);
 	return (die_during_action(p, now, p->philodata->tm_sleep));
-}
-
-int	die_during_action(t_philo *p, long int now, int action_time)
-{
-	long int	lte;
-
-	pthread_mutex_lock(p->lte_mutex);
-	lte = p->lte;
-	pthread_mutex_unlock(p->lte_mutex);
-	if (now + action_time > lte + p->philodata->tm_die)
-	{
-		sleep_ms((lte + p->philodata->tm_die) - now);
-		pthread_mutex_lock(p->state_mutex);
-		p->state = 0;
-		pthread_mutex_unlock(p->state_mutex);
-		return (0);
-	}
-	sleep_ms(action_time);
-	return (1);
 }

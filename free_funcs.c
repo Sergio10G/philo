@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 20:10:47 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/21 19:05:14 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:41:50 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ void	free_gldata(t_gldata *gld)
 		free_mutex_arrays(gld);
 	if (gld->philodata)
 		free_philodata(gld->philodata);
+	if (gld->monitor_mutex)
+	{
+		pthread_mutex_destroy(gld->monitor_mutex);
+		free(gld->monitor_mutex);
+	}
 	free(gld);
 }
 
@@ -46,7 +51,7 @@ void	free_monitor_array(t_gldata *gld)
 	int	i;
 
 	i = 0;
-	while (i < gld->philodata->philo_count)
+	while (i * PHILOS_PER_MONITOR < gld->philodata->philo_count)
 	{
 		if (gld->ph_monitor_arr[i])
 			free(gld->ph_monitor_arr[i]);

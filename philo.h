@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/23 14:09:57 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:45:16 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@
 # define C_GRAY		"\033[2;37m"
 # define C_RESET	"\033[0;0m"
 
+# define PHILOS_PER_MONITOR 10
+
 //	Structs & types
 
 typedef struct s_philodata
@@ -42,13 +44,13 @@ typedef struct s_philodata
 	int				tm_sleep;
 	int				eat_times_count;
 	char			simul_active;
+	long int		start_time;
 	pthread_mutex_t	*simul_mutex;
 }			t_philodata;
 
 typedef struct s_philo
 {
 	int				index;
-	long int		start_time;
 	long int		lte;
 	int				times_eaten;
 	char			state;
@@ -62,8 +64,9 @@ typedef struct s_philo
 
 typedef struct s_ph_monitor
 {
-	t_philo		*philo;
-	pthread_t	thread_id;
+	void			*void_gld;
+	pthread_t		thread_id;
+	int				index;
 }					t_ph_monitor;
 
 typedef struct s_gldata
@@ -74,6 +77,7 @@ typedef struct s_gldata
 	pthread_mutex_t	*fork_arr;
 	pthread_mutex_t	*state_mutex_arr;
 	pthread_mutex_t	*lte_mutex_arr;
+	pthread_mutex_t	*monitor_mutex;
 }					t_gldata;
 
 //	Function prototypes
@@ -97,7 +101,6 @@ long int		philo_action(t_philo *p, char *action_msg, char *color);
 void			*thread_routine(void *arg);
 int				eat_routine(t_philo *p);
 int				sleep_routine(t_philo *p);
-int				die_during_action(t_philo *p, long int now, int action_time);
 
 // thread_funcs_2.c functions
 int				eat_return(t_philo *p);
@@ -108,6 +111,7 @@ int				is_simul_active(t_philodata *pd);
 int				simul_and_philo_alive(t_philo *p);
 int				check_death_main(t_philo *p);
 void			finish_if_everyone_full(t_gldata *gld);
+int				die_during_action(t_philo *p, long int now, int action_time);
 
 //	input_parse.c functions
 int				parse_input(int argc, char **argv, t_philodata *pd);
@@ -121,7 +125,7 @@ int				populate_philo_arrays(t_gldata *gld);
 
 //	init_structs_2.c functions
 void			assign_mutexes(t_gldata *gld);
-t_ph_monitor	*init_ph_monitor(t_philo *p);
+t_ph_monitor	*init_ph_monitor(t_gldata *gld);
 
 //	utils.c functions
 int				ft_strlen(char *str);

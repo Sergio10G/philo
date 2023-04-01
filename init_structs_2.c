@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 16:09:39 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/07 18:13:04 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:24:21 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,14 @@ void	assign_mutexes(t_gldata *gld)
 	}
 }
 
-t_ph_monitor	*init_ph_monitor(t_philo *p)
+t_ph_monitor	*init_ph_monitor(t_gldata *gld)
 {
 	t_ph_monitor	*pm;
 
 	pm = malloc(sizeof(t_ph_monitor));
 	if (!pm)
 		return (0);
-	pm->philo = p;
+	pm->void_gld = gld;
 	pm->thread_id = 0;
 	return (pm);
 }

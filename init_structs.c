@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:56:38 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/21 18:21:29 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/01 18:34:55 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,10 @@ t_gldata	*init_gldata(t_philodata *pd)
 	gld->state_mutex_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
 	gld->lte_mutex_arr = malloc(pd->philo_count * sizeof(pthread_mutex_t));
 	gld->ph_monitor_arr = malloc(pd->philo_count * sizeof(t_ph_monitor *));
+	gld->monitor_mutex = malloc(sizeof(pthread_mutex_t));
 	if (!gld->philo_arr || !gld->fork_arr || !gld->state_mutex_arr || \
-		!gld->lte_mutex_arr || !gld->ph_monitor_arr)
-	{
-		free_gldata(gld);
+		!gld->lte_mutex_arr || !gld->ph_monitor_arr || !gld->monitor_mutex)
 		return (0);
-	}
 	return (gld);
 }
 
@@ -83,6 +81,9 @@ int	populate_mutex_arrays(t_gldata *gld)
 			return (0);
 		i++;
 	}
+	mutex_error = pthread_mutex_init(gld->monitor_mutex, 0);
+	if (mutex_error)
+		return (0);
 	return (1);
 }
 
@@ -93,9 +94,16 @@ int	populate_philo_arrays(t_gldata *gld)
 	i = 0;
 	while (i < gld->philodata->philo_count)
 	{
-		gld->philo_arr[i] = init_philo(gld->philodata, i);
-		gld->ph_monitor_arr[i] = init_ph_monitor(gld->philo_arr[i]);
-		if (!gld->philo_arr[i] || !gld->ph_monitor_arr[i])
+		gld->philo_arr[i] = init_philo(gld->philodata, i + 1);
+		if (!gld->philo_arr[i])
+			return (0);
+		i++;
+	}
+	i = 0;
+	while (i * PHILOS_PER_MONITOR < gld->philodata->philo_count)
+	{
+		gld->ph_monitor_arr[i] = init_ph_monitor(gld);
+		if (!gld->ph_monitor_arr[i])
 			return (0);
 		i++;
 	}
