@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 16:30:32 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/04/01 17:29:19 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/06 18:44:04 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,12 @@ int	parse_input(int argc, char **argv, t_philodata *pd)
 	while (++i < argc)
 	{
 		parsed_num = ft_atoi(argv[i]);
-		/*
-		if (parsed_num < 0 || (parsed_num == 0 && ft_strlen(argv[i]) != 1) || \
-			(parsed_num == 0 && ft_strlen(argv[i]) == 1 && \
-			argv[i][0] != '0') || !is_all_numeric(argv[i]))
-			return (0);
-		*/
 		if (parsed_num <= 0 || !is_all_numeric(argv[i]))
 			return (0);
 		nums[i - 1] = parsed_num;
 	}
 	pd->simul_active = 1;
+	pd->printable = 1;
 	pd->philo_count = nums[0];
 	pd->tm_die = nums[1];
 	pd->tm_eat = nums[2];

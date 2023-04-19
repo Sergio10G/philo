@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 13:19:28 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/03/23 14:30:53 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/06 18:08:53 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	sleep_ms(int ms)
 
 	desired_time_us = (get_time_ms() + ms) * 1000;
 	while (get_time_ms() * 1000 < desired_time_us)
-		usleep(10);
+		usleep(50);
 }
 
 long int	get_time_ms(void)

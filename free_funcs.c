@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 20:10:47 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/04/01 19:41:50 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/06 18:38:09 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,18 @@ void	free_philodata(t_philodata *pd)
 {
 	if (!pd)
 		return ;
-	pthread_mutex_destroy(pd->simul_mutex);
-	free(pd->simul_mutex);
+	if (pd->simul_mutex)
+	{
+		pthread_mutex_destroy(pd->simul_mutex);
+		free(pd->simul_mutex);
+	}
 	pd->simul_mutex = 0;
+	if (pd->print_mutex)
+	{
+		pthread_mutex_destroy(pd->print_mutex);
+		free(pd->print_mutex);
+	}
+	pd->print_mutex = 0;
 	if (pd)
 		free(pd);
 }

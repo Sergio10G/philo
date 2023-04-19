@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/10 14:10:59 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/04/01 19:33:22 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/19 18:21:49 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ long int	philo_action(t_philo *p, char *action_msg, char *color)
 	long int	t;
 
 	t = get_time_ms() - p->philodata->start_time;
-	pthread_mutex_lock(p->philodata->simul_mutex);
-	if (p->philodata->simul_active)
+	pthread_mutex_lock(p->philodata->print_mutex);
+	if (p->philodata->printable)
 	{
 		ft_putstr(color);
 		ft_putlong(t);
@@ -29,18 +29,17 @@ long int	philo_action(t_philo *p, char *action_msg, char *color)
 		ft_putstr(C_RESET);
 		write(1, "\n", 1);
 	}
-	pthread_mutex_unlock(p->philodata->simul_mutex);
+	pthread_mutex_unlock(p->philodata->print_mutex);
 	return (t);
 }
 
 void	announce_death(t_philo *p)
 {
+	if (p->philodata->printable == 0)
+		return ;
 	pthread_mutex_lock(p->philodata->simul_mutex);
 	if (p->philodata->simul_active == 0)
-	{
-		pthread_mutex_unlock(p->philodata->simul_mutex);
 		return ;
-	}
 	p->philodata->simul_active = 0;
 	pthread_mutex_unlock(p->philodata->simul_mutex);
 	ft_putstr(C_RED);
@@ -100,18 +99,22 @@ int	eat_routine(t_philo *p)
 	pthread_mutex_lock(p->right_fork);
 	philo_action(p, "has taken a fork", C_CYAN);
 	pthread_mutex_lock(p->lte_mutex);
+	pthread_mutex_lock(p->state_mutex);
 	p->lte = philo_action(p, "is eating", C_BLUE);
+	pthread_mutex_unlock(p->state_mutex);
 	pthread_mutex_unlock(p->lte_mutex);
-	die_during_action(p, p->lte, p->philodata->tm_eat);
-	pthread_mutex_unlock(p->left_fork);
-	pthread_mutex_unlock(p->right_fork);
 	return (eat_return(p));
 }
 
-int	sleep_routine(t_philo *p)
+int	eat_return(t_philo *p)
 {
-	long int	now;
+	int	ret_val;
 
-	now = philo_action(p, "is sleeping", C_PURPLE);
-	return (die_during_action(p, now, p->philodata->tm_sleep));
+	die_during_action(p, p->lte, p->philodata->tm_eat);
+	pthread_mutex_unlock(p->left_fork);
+	pthread_mutex_unlock(p->right_fork);
+	pthread_mutex_lock(p->state_mutex);
+	ret_val = p->state;
+	pthread_mutex_unlock(p->state_mutex);
+	return (ret_val);
 }

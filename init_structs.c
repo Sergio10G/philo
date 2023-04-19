@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:56:38 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/04/01 18:34:55 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/06 18:39:54 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,20 @@ t_philo	*init_philo(t_philodata *pd, int index)
 t_philodata	*init_philodata(void)
 {
 	t_philodata	*pd;
+	int			mutex_error;
 
 	pd = malloc(sizeof(t_philodata));
 	if (!pd)
 		return (0);
 	memset(pd, 0, sizeof(t_philodata));
 	pd->simul_mutex = malloc(sizeof(pthread_mutex_t));
-	if (!pd->simul_mutex)
+	pd->print_mutex = malloc(sizeof(pthread_mutex_t));
+	if (!pd->simul_mutex || !pd->print_mutex)
 		return (0);
-	if (pthread_mutex_init(pd->simul_mutex, 0))
-	{
-		free(pd->simul_mutex);
+	mutex_error = pthread_mutex_init(pd->simul_mutex, 0);
+	mutex_error = pthread_mutex_init(pd->print_mutex, 0);
+	if (mutex_error)
 		return (0);
-	}
 	return (pd);
 }
 

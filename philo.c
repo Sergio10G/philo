@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:33 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/04/01 19:43:13 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/19 18:21:08 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,7 @@ int	alloc_phase(int argc, char **argv, t_philodata **pd, t_gldata **gld)
 	int	error_comp;
 
 	*pd = init_philodata();
-	if (!*pd)
-		return (0);
-	if (!parse_input(argc, argv, *pd))
+	if (!*pd || !parse_input(argc, argv, *pd))
 	{
 		free_philodata(*pd);
 		return (0);

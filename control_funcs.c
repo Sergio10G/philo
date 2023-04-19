@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/19 17:22:22 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/04/01 19:32:47 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/06 17:39:49 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ int	check_death_main(t_philo *p)
 	lte = p->lte;
 	pthread_mutex_unlock(p->lte_mutex);
 	pthread_mutex_lock(p->state_mutex);
-	result = ((get_time_ms() - p->philodata->start_time - lte > p->philodata->tm_die \
-			|| p->state == 0) && p->state != 2);
+	result = ((get_time_ms() - p->philodata->start_time - lte \
+				> p->philodata->tm_die || p->state == 0) && p->state != 2);
 	pthread_mutex_unlock(p->state_mutex);
 	return (result);
 }

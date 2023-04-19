@@ -6,7 +6,7 @@
 /*   By: sdiez-ga <sdiez-ga@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 17:51:43 by sdiez-ga          #+#    #+#             */
-/*   Updated: 2023/04/01 19:45:16 by sdiez-ga         ###   ########.fr       */
+/*   Updated: 2023/04/19 18:21:35 by sdiez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@
 # define C_GRAY		"\033[2;37m"
 # define C_RESET	"\033[0;0m"
 
-# define PHILOS_PER_MONITOR 10
+# define SLEEP_INCREMENT 50
+# define PHILOS_PER_MONITOR 20
 
 //	Structs & types
 
@@ -44,8 +45,10 @@ typedef struct s_philodata
 	int				tm_sleep;
 	int				eat_times_count;
 	char			simul_active;
+	char			printable;
 	long int		start_time;
 	pthread_mutex_t	*simul_mutex;
+	pthread_mutex_t	*print_mutex;
 }			t_philodata;
 
 typedef struct s_philo
@@ -105,6 +108,8 @@ int				sleep_routine(t_philo *p);
 // thread_funcs_2.c functions
 int				eat_return(t_philo *p);
 void			*monitor_routine(void *arg);
+void			monitor_loop(t_gldata *gld, int pc, int off);
+void			monitor_join(t_gldata *gld, int pc, int off);
 
 //	control_funcs.c functions
 int				is_simul_active(t_philodata *pd);
